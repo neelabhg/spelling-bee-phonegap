@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <meta charset="utf-8">
+    <title>Spelling Bee</title>
+    <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.2.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/jquery.mobile-1.4.2.min.js"></script>
+</head>
+<body>
+
+<!-- Main page -->
+<div data-role="page" class="" id="mainPage">
+    <div data-role="header" class="">
+        <h1>Spelling Bee</h1>
+        <a href="#settingsPage" id='settingsButton' class="ui-btn-right" data-role="button" data-icon="gear">Settings</a>
+        <a href="#aboutPage" id='aboutButton' class="ui-btn-left" data-role="button" data-icon="info">About</a>
+    </div>
+    <div data-role="content" class="">
+        <button class="ui-btn" id="startButtonEasy">Easy</button>
+	<button class="ui-btn" id="startButtonMedium">Medium</button>
+	<button class="ui-btn" id="startButtonHard">Hard</button>
+	<a href="#helpPage" class="ui-btn" data-role="button">How to play</a>
+    </div>
+</div>
+
+<!-- Settings page -->
+<div data-role="page" class="" id="settingsPage" data-add-back-btn="true" >
+    <div data-role="header" class="">
+        <a href="#mainPage" class="ui-btn ui-icon-back ui-btn-icon-left" data-rel="back">Back</a>
+        <h1>Settings</h1>
+    </div>
+    <div data-role="content" class="">
+
+    </div>
+</div>
+
+<!-- About page -->
+<div data-role="page" class="" id="aboutPage" data-add-back-btn="true" >
+    <div data-role="header" class="">
+        <a href="#mainPage" class="ui-btn ui-icon-back ui-btn-icon-left" data-rel="back">Back</a>
+        <h1>About</h1>
+    </div>
+    <div data-role="content" class="">
+        &copy; 2014, <a href="http://neelabhgupta.com/">Neelabh Gupta</a>
+    </div>
+</div>
+
+<!-- How to play (help) page -->
+<div data-role="page" class="" id="helpPage" data-add-back-btn="true" >
+    <div data-role="header" class="">
+        <a href="#mainPage" class="ui-btn ui-icon-back ui-btn-icon-left" data-rel="back">Back</a>
+        <h1>How to play</h1>
+    </div>
+    <div data-role="content" class="">
+        TODO
+    </div>
+</div>
+
+<script type="text/javascript" src="phonegap.js"></script>
+
+<!-- Wordnik API -->
+<script type="text/javascript" src="js/datasources/wordnik/wordnik_api_key.js"></script>
+<script type="text/javascript" src="js/datasources/wordnik/shred.bundle.js"></script>
+<script type="text/javascript" src="js/datasources/wordnik/swagger.js"></script>
+<script type="text/javascript" src="js/datasources/wordnik/wordnik_client.js"></script>
+
+<!-- Main app -->
+<script type="text/javascript" src="js/datasource.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>
