@@ -1,4 +1,6 @@
-spelling-bee-phonegap
-=====================
+Spelling Bee Mobile App
+========================
 
-A spelling bee practice application built using PhoneGap.
+A mobile application to practice for the spelling bee, built using [PhoneGap](http://phonegap.com/).
+
+&copy; 2014, [Neelabh Gupta](http://neelabhgupta.com/).
