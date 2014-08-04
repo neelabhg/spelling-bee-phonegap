@@ -15,14 +15,89 @@
 <div data-role="page" class="" id="mainPage">
     <div data-role="header" class="">
         <h1>Spelling Bee</h1>
-        <a href="#settingsPage" id='settingsButton' class="ui-btn-right" data-role="button" data-icon="gear">Settings</a>
-        <a href="#aboutPage" id='aboutButton' class="ui-btn-left" data-role="button" data-icon="info">About</a>
+        <a href="#settingsPage" id="settingsButton" class="ui-btn-right" data-role="button" data-icon="gear">Settings</a>
+        <a href="#aboutPage" id="aboutButton" class="ui-btn-left" data-role="button" data-icon="info">About</a>
     </div>
     <div data-role="content" class="">
-        <button class="ui-btn" id="startButtonEasy">Easy</button>
-	<button class="ui-btn" id="startButtonMedium">Medium</button>
-	<button class="ui-btn" id="startButtonHard">Hard</button>
-	<a href="#helpPage" class="ui-btn" data-role="button">How to play</a>
+        <button class="ui-btn" id="startButton">Start</button>
+        <a href="#helpPage" class="ui-btn" data-role="button">How to play</a>
+        <button class="ui-btn" id="exitButton">Exit</button>
+    </div>
+</div>
+
+<!-- Empty page for showing loading spinner -->
+<div data-role="page" class="" id="emptyPage">
+    <div data-role="header" class="">
+        <h1>Spelling Bee</h1>
+    </div>
+    <div data-role="content" class="">
+    </div>
+</div>
+
+<!-- Spelling page -->
+<div data-role="page" class="" id="spellingPage">
+    <div data-role="header" class="">
+        <h1>Spelling Bee</h1>
+        <a href="#" id="homeButton" class="ui-btn-left" data-role="button" data-icon="home">Home</a>
+    </div>
+    <div data-role="content" class="">
+        <input type="range" name="wordProgressBar" id="wordProgressBar" data-highlight="true" min="0" max="100" value="0">
+        <div class="ui-grid-b">
+            <div class="ui-block-a">Word <span id="numWordsDisplay">0</span> of <span id="maxWordsDisplay">0</span></div>
+            <div class="ui-block-b"><button class="ui-btn ui-icon-audio ui-btn-icon-left" id="sayWordButton">Say word</button></div>
+            <div class="ui-block-c"><div style="float: right;">Tries <span id="numTriesDisplay">0</span>/<span id="maxTriesDisplay">0</span></div></div>
+        </div>
+        <div id="wordDefinitionCollapsible" data-role="collapsible" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+            <h4>Definition</h4>
+            <div id="wordDefinitionDisplay">No definition</div>
+        </div>
+        <div class="ui-field-contain">
+            <label for="word-input">Your answer:</label>
+            <input type="text" data-clear-btn="true" name="wordInput" id="wordInput" value="">
+        </div>
+        <button class="ui-btn ui-icon-check ui-btn-icon-left" id="checkAnswerButton">Go</button>
+        <button class="ui-btn ui-icon-eye ui-btn-icon-left" id="showAnswerButton">Show answer</button>
+    </div>
+</div>
+
+<!-- Home navigation confirmation dialog page -->
+<div data-role="page" data-dialog="true" class="" id="homeNavigationConfirmationDialogPage">
+    <div data-role="header" class="">
+        <h1>Are you sure?</h1>
+    </div>
+    <div data-role="content" class="">
+        <div>Are you sure you want to quit the current game and go back to the main menu? You will lose your progress so far.</div>
+        <a href="#mainPage" class="ui-btn">Yes</a>
+        <a href="#" data-rel="back" class="ui-btn">Cancel</a>
+    </div>
+</div>
+
+<!-- Dialog page for finished word -->
+<div data-role="page" data-dialog="true" class="" id="wordDoneDialogPage">
+    <div data-role="header" class="">
+        <h1 id="dialogHeading">Spelling Bee</h1>
+    </div>
+    <div data-role="content" class="">
+        <div>The correct word is <span id="correctWord"></span>.</div>
+        <button class="ui-btn" id="nextWordButton">Next word</button>
+    </div>
+</div>
+
+<!-- Results page -->
+<div data-role="page" class="" id="resultsPage">
+    <div data-role="header" class="">
+        <h1>Spelling Bee</h1>
+    </div>
+    <div data-role="content" class="">
+        <div>
+            Your score:
+            <ul>
+                <li>Correct words: <span id="correctWordsCount">0</span></li>
+                <li>Incorrect words: <span id="incorrectWordsCount">0</span></li>
+                <li>Skipped words: <span id="skippedWordsCount">0</span></li>
+            </ul>
+        </div>
+        <a href="#mainPage" class="ui-btn" data-role="button">Back to Home</a>
     </div>
 </div>
 
