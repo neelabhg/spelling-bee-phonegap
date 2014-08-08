@@ -16,12 +16,13 @@
     <div data-role="header" class="">
         <h1>Spelling Bee</h1>
         <a href="#settingsPage" id="settingsButton" class="ui-btn-right" data-role="button" data-icon="gear">Settings</a>
-        <a href="#aboutPage" id="aboutButton" class="ui-btn-left" data-role="button" data-icon="info">About</a>
     </div>
     <div data-role="content" class="">
-        <button class="ui-btn" id="startButton">Start</button>
-        <a href="#helpPage" class="ui-btn" data-role="button">How to play</a>
-        <button class="ui-btn" id="exitButton">Exit</button>
+        <div>
+            <a href="#" class="ui-btn" data-role="button" id="startButton">Start</a>
+            <a href="#helpPage" class="ui-btn" data-role="button">How to play</a>
+            <a href="#" class="ui-btn" data-role="button" id="exitButton">Exit</a>
+        </div>
     </div>
 </div>
 
@@ -38,10 +39,12 @@
 <div data-role="page" class="" id="spellingPage">
     <div data-role="header" class="">
         <h1>Spelling Bee</h1>
-        <a href="#" id="homeButton" class="ui-btn-left" data-role="button" data-icon="home">Home</a>
+        <a href="#homeNavigationConfirmationPopup" data-rel="popup" data-position-to="window" class="ui-btn-left" data-role="button" data-icon="home">Home</a>
     </div>
     <div data-role="content" class="">
-        <input type="range" name="wordProgressBar" id="wordProgressBar" data-highlight="true" min="0" max="100" value="0">
+        <div class="progress-bar-container">
+            <input type="range" name="wordProgressBar" id="wordProgressBar" data-highlight="true" min="0" max="100" value="0">
+        </div>
         <div class="ui-grid-b">
             <div class="ui-block-a">Word <span id="numWordsDisplay">0</span> of <span id="maxWordsDisplay">0</span></div>
             <div class="ui-block-b"><button class="ui-btn ui-icon-audio ui-btn-icon-left" id="sayWordButton">Say word</button></div>
@@ -55,31 +58,33 @@
             <label for="word-input">Your answer:</label>
             <input type="text" data-clear-btn="true" name="wordInput" id="wordInput" value="">
         </div>
-        <button class="ui-btn ui-icon-check ui-btn-icon-left" id="checkAnswerButton">Go</button>
-        <button class="ui-btn ui-icon-eye ui-btn-icon-left" id="showAnswerButton">Show answer</button>
+        <div>
+            <button class="ui-btn ui-icon-check ui-btn-icon-left" id="checkAnswerButton">Go</button>
+            <button class="ui-btn ui-icon-eye ui-btn-icon-left" id="showAnswerButton">Show answer</button>
+        </div>
     </div>
-</div>
 
-<!-- Home navigation confirmation dialog page -->
-<div data-role="page" data-dialog="true" class="" id="homeNavigationConfirmationDialogPage">
-    <div data-role="header" class="">
-        <h1>Are you sure?</h1>
+    <!-- Home navigation confirmation popup -->
+    <div data-role="popup" data-dismissible="false" class="" id="homeNavigationConfirmationPopup">
+        <div data-role="header" class="">
+            <h3>Are you sure?</h3>
+        </div>
+        <div data-role="content" class="">
+            <div>Are you sure you want to quit the current game and go back to the main menu? You will lose your progress so far.</div>
+            <a href="#mainPage" class="ui-btn">Yes</a>
+            <a href="#" data-rel="back" class="ui-btn">Cancel</a>
+        </div>
     </div>
-    <div data-role="content" class="">
-        <div>Are you sure you want to quit the current game and go back to the main menu? You will lose your progress so far.</div>
-        <a href="#mainPage" class="ui-btn">Yes</a>
-        <a href="#" data-rel="back" class="ui-btn">Cancel</a>
-    </div>
-</div>
 
-<!-- Dialog page for finished word -->
-<div data-role="page" data-dialog="true" class="" id="wordDoneDialogPage">
-    <div data-role="header" class="">
-        <h1 id="dialogHeading">Spelling Bee</h1>
-    </div>
-    <div data-role="content" class="">
-        <div>The correct word is <span id="correctWord"></span>.</div>
-        <button class="ui-btn" id="nextWordButton">Next word</button>
+    <!-- Popup for finished word -->
+    <div data-role="popup" data-dismissible="false" class="" id="wordDonePopup">
+        <div data-role="header" class="">
+            <h3 id="dialogHeading">Spelling Bee</h3>
+        </div>
+        <div data-role="content" class="">
+            <div>The correct word is <span id="correctWord"></span>.</div>
+            <button class="ui-btn" id="nextWordButton">Next word</button>
+        </div>
     </div>
 </div>
 
@@ -102,31 +107,78 @@
 </div>
 
 <!-- Settings page -->
-<div data-role="page" class="" id="settingsPage" data-add-back-btn="true" >
+<div data-role="page" class="" id="settingsPage" data-add-back-btn="true">
     <div data-role="header" class="">
-        <a href="#mainPage" class="ui-btn ui-icon-back ui-btn-icon-left" data-rel="back">Back</a>
+        <a href="#" id="settingsPageBackButton" class="ui-btn-left" data-icon="back">Back</a>
         <h1>Settings</h1>
     </div>
     <div data-role="content" class="">
-
+        <div class="ui-corner-all custom-corners">
+            <div class="ui-bar ui-bar-a">
+                <h3>Game play</h3>
+            </div>
+            <div class="ui-body ui-body-a">
+                <div class="ui-field-contain">
+                    <label for="numWordsSettingsSlider">Number of words per game:</label>
+                    <input type="range" name="numWordsSettingsSlider" id="numWordsSettingsSlider" min="2" max="20" value="5">
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="ui-corner-all custom-corners">
+            <div class="ui-bar ui-bar-a">
+                <h3>Privacy</h3>
+            </div>
+            <div class="ui-body ui-body-a">
+                <p>&copy; 2014, <a href="http://neelabhgupta.com/">Neelabh Gupta</a></p>
+            </div>
+        </div>
+        <br>
+        <div class="ui-grid-b">
+            <div class="ui-block-a"><button id="saveSettingsButton" class="ui-btn ui-shadow">Save</button></div>
+            <div class="ui-block-b"><button id="discardSettingsButton" class="ui-btn ui-shadow">Cancel</button></div>
+            <div class="ui-block-c"><button id="restoreDefaultsSettingsButton" class="ui-btn ui-shadow">Defaults</button></div>
+        </div>
+        <br>
+        <div class="ui-corner-all custom-corners">
+            <div class="ui-bar ui-bar-a">
+                <h3>About</h3>
+            </div>
+            <div class="ui-body ui-body-a">
+                <p>&copy; 2014, <a href="http://neelabhgupta.com/">Neelabh Gupta</a></p>
+            </div>
+        </div>
     </div>
-</div>
 
-<!-- About page -->
-<div data-role="page" class="" id="aboutPage" data-add-back-btn="true" >
-    <div data-role="header" class="">
-        <a href="#mainPage" class="ui-btn ui-icon-back ui-btn-icon-left" data-rel="back">Back</a>
-        <h1>About</h1>
+    <!-- Home navigation/Discard changes confirmation popup -->
+    <div data-role="popup" data-dismissible="false" class="" id="discardSettingsChangesConfirmationPopup">
+        <div data-role="header" class="">
+            <h3>Discard changes?</h3>
+        </div>
+        <div data-role="content" class="">
+            <div>Are you sure you want to discard any changes?</div>
+            <a href="#mainPage" id="confirmDiscardSettingsButton" class="ui-btn">Yes</a>
+            <a href="#" data-rel="back" class="ui-btn">Cancel</a>
+        </div>
     </div>
-    <div data-role="content" class="">
-        &copy; 2014, <a href="http://neelabhgupta.com/">Neelabh Gupta</a>
+
+    <!-- Reset to default confirmation popup -->
+    <div data-role="popup" data-dismissible="false" class="" id="restoreDefaultSettingsConfirmationPopup">
+        <div data-role="header" class="">
+            <h3>Reset to default?</h3>
+        </div>
+        <div data-role="content" class="">
+            <div>Are you sure you want to restore the default settings?</div>
+            <a href="#" data-rel="back" id="confirmRestoreDefaultSettingsButton" class="ui-btn">Yes</a>
+            <a href="#" data-rel="back" class="ui-btn">Cancel</a>
+        </div>
     </div>
 </div>
 
 <!-- How to play (help) page -->
 <div data-role="page" class="" id="helpPage" data-add-back-btn="true" >
     <div data-role="header" class="">
-        <a href="#mainPage" class="ui-btn ui-icon-back ui-btn-icon-left" data-rel="back">Back</a>
+        <a href="#mainPage" class="ui-btn-left" data-rel="back" data-icon="back">Back</a>
         <h1>How to play</h1>
     </div>
     <div data-role="content" class="">
