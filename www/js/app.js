@@ -5,7 +5,8 @@ var app = (function ($, datasource) {
 
     var defaultSettings = {
         maxWords: 5,
-        maxTries: 5
+        maxTries: 5,
+        enableAnalytics: true
     };
 
     var settings;
@@ -62,7 +63,8 @@ var app = (function ($, datasource) {
         }
     };
 
-    var saveSettings = function (settings) {
+    var saveSettings = function (newSettings) {
+        settings = newSettings;
         localStorage.setItem("settings", JSON.stringify(settings));
     };
 
@@ -80,13 +82,16 @@ var app = (function ($, datasource) {
     var getUserSettings = function () {
         return {
             maxWords: parseInt($("#numWordsSettingsSlider").val()),
-            maxTries: 5
+            maxTries: 5,
+            enableAnalytics: $("#analyticsEnableflipSwitch").val() === "on"
         };
     };
 
     var setUserSettings = function (settings) {
         $("#numWordsSettingsSlider").val(settings.maxWords);
         $("#numWordsSettingsSlider").slider("refresh");
+        $("#analyticsEnableflipSwitch").val((settings.enableAnalytics ? "on" : "off"));
+        $("#analyticsEnableflipSwitch").slider("refresh");
     };
 
     $(document).on("ready", function () {
