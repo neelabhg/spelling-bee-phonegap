@@ -33,6 +33,28 @@
     </div>
     <div data-role="content" class="">
     </div>
+
+    <!-- No internet connection popup -->
+    <div data-role="popup" data-dismissible="false" class="" id="noConnectionPopup">
+        <div data-role="header" class="">
+            <h3>No connection</h3>
+        </div>
+        <div data-role="content" class="">
+            <div>Unable to connect to the internet. If you are on 2G/3G/4G, make sure you have enabled cellular downloads in the settings.</div>
+            <a href="#" data-rel="back" class="ui-btn">Dismiss</a>
+        </div>
+    </div>
+
+    <!-- Error loading words popup -->
+    <div data-role="popup" data-dismissible="false" class="" id="loadErrorPopup">
+        <div data-role="header" class="">
+            <h3>Error</h3>
+        </div>
+        <div data-role="content" class="">
+            <div>Error loading words. Please try again later.</div>
+            <a href="#" data-rel="back" class="ui-btn">Dismiss</a>
+        </div>
+    </div>
 </div>
 
 <!-- Spelling page -->
@@ -95,11 +117,15 @@
     </div>
     <div data-role="content" class="">
         <div>
-            Your score:
+            Result summary:
             <ul>
                 <li>Correct words: <span id="correctWordsCount">0</span></li>
                 <li>Incorrect words: <span id="incorrectWordsCount">0</span></li>
                 <li>Skipped words: <span id="skippedWordsCount">0</span></li>
+            </ul>
+            Report:
+            <ul id="wordReport">
+                
             </ul>
         </div>
         <a href="#mainPage" class="ui-btn" data-role="button">Back to Home</a>
@@ -127,13 +153,29 @@
         <br>
         <div class="ui-corner-all custom-corners">
             <div class="ui-bar ui-bar-a">
+                <h3>General</h3>
+            </div>
+            <div class="ui-body ui-body-a">
+                <p>Internet access is required during gameplay. Enable download over cellular connection? You may be charged by your carrier.</p>
+                <div class="ui-field-contain">
+                    <label for="cellularDownloadEnableFlipSwitch">Download over cellular data:</label>
+                    <select name="cellularDownloadEnableFlipSwitch" id="cellularDownloadEnableFlipSwitch" data-role="slider">
+                        <option value="off">Off</option>
+                        <option value="on">On</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="ui-corner-all custom-corners">
+            <div class="ui-bar ui-bar-a">
                 <h3>Privacy</h3>
             </div>
             <div class="ui-body ui-body-a">
-                <p>&copy; 2014, <a href="http://neelabhgupta.com/">Neelabh Gupta</a></p>
+                <p>This application collects anonymous usage data to help improve the user experience. No personally identifiable information will be collected. If you do not want this data to be collected, you can toggle it off below. However, I request that you leave it on, as it will help me improve this application further.</p>
                 <div class="ui-field-contain">
-                    <label for="analyticsEnableflipSwitch">Toggle analytics:</label>
-                    <select name="analyticsEnableflipSwitch" id="analyticsEnableflipSwitch" data-role="slider">
+                    <label for="analyticsEnableFlipSwitch">Analytics:</label>
+                    <select name="analyticsEnableFlipSwitch" id="analyticsEnableFlipSwitch" data-role="slider">
                         <option value="off">Off</option>
                         <option value="on">On</option>
                     </select>
@@ -152,6 +194,11 @@
                 <h3>About</h3>
             </div>
             <div class="ui-body ui-body-a">
+                
+                <div>
+                    <p>Audio pronunciation data and word definitions are provided by Merriam-Webster Inc.</p>
+                    <p><a href="http://www.merriam-webster.com/"><img src="img/mw-logo-light-background-100x100.png"></a></p>
+                </div>
                 <p>&copy; 2014, <a href="http://neelabhgupta.com/">Neelabh Gupta</a></p>
             </div>
         </div>
@@ -195,18 +242,13 @@
 
 <script type="text/javascript" src="phonegap.js"></script>
 
-<!-- Wordnik API -->
-<script type="text/javascript" src="js/datasources/wordnik/wordnik_api_key.js"></script>
-<script type="text/javascript" src="js/datasources/wordnik/shred.bundle.js"></script>
-<script type="text/javascript" src="js/datasources/wordnik/swagger.js"></script>
-<script type="text/javascript" src="js/datasources/wordnik/wordnik_client.js"></script>
+<!-- The Merriam-Webster Dictionary API -->
+<script type="text/javascript" src="js/datasources/merriam-webster/mw_api_keys.js"></script>
+<script type="text/javascript" src="js/datasources/merriam-webster/mw_client.js"></script>
 
 <!-- Main app -->
-<script type="text/javascript" src="js/datasource.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
+<script type="text/javascript"></script>
 
-<script type="text/javascript">
-
-</script>
 </body>
 </html>

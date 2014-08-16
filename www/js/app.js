@@ -1,30 +1,36 @@
 // The main application
-var app = (function ($, datasource) {
+var app = (function ($, mw_client) {
 
-    var ds, settings;
+    var ds, settings, gameWordData;
 
     var defaultSettings = {
         maxWords: 5,
         maxTries: 5,
-        enableAnalytics: true
+        enableAnalytics: true,
+        enableCellularDownloads: false
     };
-
-    var settings;
 
     var init = function () {
 
         settings = loadSettings() || defaultSettings;
         
-        ds = datasource("wordnik");
-
-        $("#startButton").on("click", function () {
-            loadNextWord(1, {});
+        $("#startButton").on("click", function (e) {
+            startGame();
         });
 
         $("#exitButton").on("click", function () {
             navigator.app.exitApp();
         });
 
+        var handleDiscardSettingsAction = function (userClickEvent) {
+            if (JSON.stringify(settings) !== JSON.stringify(getUserSettings())) {
+                // unsaved settings
+                $("#discardSettingsChangesConfirmationPopup").popup("open");
+                userClickEvent.preventDefault();
+            } else {
+                changePage("#mainPage");
+            }
+        };
         $("#settingsPageBackButton").on("click", handleDiscardSettingsAction);
         $("#discardSettingsButton").on("click", handleDiscardSettingsAction);
 
@@ -44,23 +50,13 @@ var app = (function ($, datasource) {
             setUserSettings(defaultSettings);
         });
 
-        $("#saveSettingsButton").on("click", function (e) {
+        $("#saveSettingsButton").on("click", function () {
             saveSettings(getUserSettings());
         });
 
         $("#settingsPage").on("pagebeforeshow", function () {
             setUserSettings(settings);
         });
-    };
-
-    var handleDiscardSettingsAction = function (userClickEvent) {
-        if (JSON.stringify(settings) !== JSON.stringify(getUserSettings())) {
-            // unsaved settings
-            $("#discardSettingsChangesConfirmationPopup").popup("open");
-            userClickEvent.preventDefault();
-        } else {
-            changePage("#mainPage");
-        }
     };
 
     var saveSettings = function (newSettings) {
@@ -83,15 +79,18 @@ var app = (function ($, datasource) {
         return {
             maxWords: parseInt($("#numWordsSettingsSlider").val()),
             maxTries: 5,
-            enableAnalytics: $("#analyticsEnableflipSwitch").val() === "on"
+            enableAnalytics: $("#analyticsEnableFlipSwitch").val() === "on",
+            enableCellularDownloads: $("#cellularDownloadEnableFlipSwitch").val() === "on"
         };
     };
 
     var setUserSettings = function (settings) {
         $("#numWordsSettingsSlider").val(settings.maxWords);
         $("#numWordsSettingsSlider").slider("refresh");
-        $("#analyticsEnableflipSwitch").val((settings.enableAnalytics ? "on" : "off"));
-        $("#analyticsEnableflipSwitch").slider("refresh");
+        $("#analyticsEnableFlipSwitch").val((settings.enableAnalytics ? "on" : "off"));
+        $("#analyticsEnableFlipSwitch").slider("refresh");
+        $("#cellularDownloadEnableFlipSwitch").val((settings.enableCellularDownloads ? "on" : "off"));
+        $("#cellularDownloadEnableFlipSwitch").slider("refresh");
     };
 
     $(document).on("ready", function () {
@@ -133,13 +132,44 @@ var app = (function ($, datasource) {
         $.mobile.loading('hide');
     };
 
-    var loadNextWord = function (wordNum, accumulatedResults) {
+    var startGame = function () {
         changePage("#emptyPage");
-        showLoadingSpinner("Loading next word");
-        ds.getRandomWords(1, function (newWordData) {
+        showLoadingSpinner("Loading words");
+        if (!isInternetAvailable()) {
             hideLoadingSpinner();
-            spellView(wordNum, newWordData[0], accumulatedResults);
+            $("#noConnectionPopup").popup("open");
+            e.preventDefault();
+        }
+
+        // Load all words from preset list
+        var wordList = ["word"];
+        if (!(wordList && wordList.length === settings.maxWords)) {
+            $("#loadErrorPopup").popup("open");
+            return;
+        }
+
+        // Get their data from Merriam-Webster
+        mw_client.getDataForWords(wordList, function (newWordData) {
+            gameWordData = newWordData;
+            hideLoadingSpinner();
+            if (!(gameWordData && gameWordData.length === settings.maxWords)) {
+                $("#loadErrorPopup").popup("open");
+                return;   
+            }
+            loadNextWord(1, {
+                correctCount: 0,
+                incorrectCount: 0,
+                skippedCount: 0,
+                words:[]
+            });
         });
+    };
+
+    // a separate function for loading words, rather than passing an array of words,
+    // so that we can control how to get the next word
+    var loadNextWord = function (wordNum, accumulatedResults) {
+        // get the next word from the list of already loaded words
+        spellView(wordNum, gameWordData[wordNum - 1], accumulatedResults);
     };
 
     var spellView = function (wordNum, word, results) {
@@ -191,8 +221,11 @@ var app = (function ($, datasource) {
         });
 
         $("#showAnswerButton").off("click").on("click", function () {
-            results['skipped'] = (results['skipped'] || 0) + 1;
-            
+            results['skippedCount'] += 1;
+            results.words.push({
+                word: word.word,
+                result: 'skipped'
+            });
             $("#dialogHeading").text("Skipped word");
             $("#correctWord").text(word.word);
             $("#wordDonePopup").popup("open");
@@ -202,7 +235,11 @@ var app = (function ($, datasource) {
             numTries += 1;
             if ($("#wordInput").val().toLowerCase() === word.word.toLowerCase()) {
                 // correct answer
-                results['correct'] = (results['correct'] || 0) + 1;
+                results['correctCount'] += 1;
+                results.words.push({
+                    word: word.word,
+                    result: 'correct'
+                });
                 $("#dialogHeading").text("Correct answer!");
                 $("#correctWord").text(word.word);
                 $("#wordDonePopup").popup("open");
@@ -210,7 +247,11 @@ var app = (function ($, datasource) {
                 // incorrect answer
                 if (numTries === settings.maxTries) {
                     // max number of tries reached
-                    results['incorrect'] = (results['incorrect'] || 0) + 1;
+                    results['incorrectCount'] += 1;
+                    results.words.push({
+                        word: word.word,
+                        result: 'incorrect'
+                    });
                     $("#dialogHeading").text("Incorrect answer");
                     $("#correctWord").text(word.word);
                     $("#wordDonePopup").popup("open");
@@ -224,12 +265,31 @@ var app = (function ($, datasource) {
     };
 
     var displayResults = function (results) {
-        $("#correctWordsCount").text(results['correct'] || 0);
-        $("#incorrectWordsCount").text(results['incorrect'] || 0);
-        $("#skippedWordsCount").text(results['skipped'] || 0);
+        $("#correctWordsCount").text(results['correctCount'] || 0);
+        $("#incorrectWordsCount").text(results['incorrectCount'] || 0);
+        $("#skippedWordsCount").text(results['skippedCount'] || 0);
+        results.words.foreach(function (wordResult) {
+            $("#wordReport").append($("<li></li>", {
+                text: wordResult.word + ": " + wordResult.result
+            }));
+        });
         changePage("#resultsPage");
+    };
+
+    var isInternetAvailable = function () {
+        if (!(navigator && navigator.connection && navigator.connection.type)) {
+            return false;
+        }
+        var networkState = navigator.connection.type;
+        if (networkState === Connection.NONE || networkState === Connection.UNKNOWN) {
+            return false;
+        } else if (networkState === Connection.WIFI || networkState === Connection.Ethernet) {
+            return true;
+        } else {
+            return settings.enableCellularDownloads;
+        }
     };
 
     return {};
 
-})(jQuery, datasource);
+})(jQuery, mw_client);
