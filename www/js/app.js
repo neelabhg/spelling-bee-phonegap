@@ -14,7 +14,7 @@ var app = (function ($, mw_client) {
 
         settings = loadSettings() || defaultSettings;
         
-        $("#startButton").on("click", function (e) {
+        $("#startButton").on("click", function () {
             startGame();
         });
 
@@ -22,15 +22,6 @@ var app = (function ($, mw_client) {
             navigator.app.exitApp();
         });
 
-        var handleDiscardSettingsAction = function (userClickEvent) {
-            if (JSON.stringify(settings) !== JSON.stringify(getUserSettings())) {
-                // unsaved settings
-                $("#discardSettingsChangesConfirmationPopup").popup("open");
-                userClickEvent.preventDefault();
-            } else {
-                changePage("#mainPage");
-            }
-        };
         $("#settingsPageBackButton").on("click", handleDiscardSettingsAction);
         $("#discardSettingsButton").on("click", handleDiscardSettingsAction);
 
@@ -52,11 +43,22 @@ var app = (function ($, mw_client) {
 
         $("#saveSettingsButton").on("click", function () {
             saveSettings(getUserSettings());
+            changePage("#mainPage");
         });
 
         $("#settingsPage").on("pagebeforeshow", function () {
             setUserSettings(settings);
         });
+    };
+
+    var handleDiscardSettingsAction = function (userClickEvent) {
+        if (JSON.stringify(settings) !== JSON.stringify(getUserSettings())) {
+            // unsaved settings
+            $("#discardSettingsChangesConfirmationPopup").popup("open");
+            userClickEvent.preventDefault();
+        } else {
+            changePage("#mainPage");
+        }
     };
 
     var saveSettings = function (newSettings) {
@@ -85,12 +87,9 @@ var app = (function ($, mw_client) {
     };
 
     var setUserSettings = function (settings) {
-        $("#numWordsSettingsSlider").val(settings.maxWords);
-        $("#numWordsSettingsSlider").slider("refresh");
-        $("#analyticsEnableFlipSwitch").val((settings.enableAnalytics ? "on" : "off"));
-        $("#analyticsEnableFlipSwitch").slider("refresh");
-        $("#cellularDownloadEnableFlipSwitch").val((settings.enableCellularDownloads ? "on" : "off"));
-        $("#cellularDownloadEnableFlipSwitch").slider("refresh");
+        $("#numWordsSettingsSlider").val(settings.maxWords).slider("refresh");
+        $("#analyticsEnableFlipSwitch").val((settings.enableAnalytics ? "on" : "off")).slider("refresh");
+        $("#cellularDownloadEnableFlipSwitch").val((settings.enableCellularDownloads ? "on" : "off")).slider("refresh");
     };
 
     $(document).on("ready", function () {
@@ -138,12 +137,13 @@ var app = (function ($, mw_client) {
         if (!isInternetAvailable()) {
             hideLoadingSpinner();
             $("#noConnectionPopup").popup("open");
-            e.preventDefault();
+            return;
         }
 
         // Load all words from preset list
-        var wordList = ["word"];
+        var wordList = ["accept", "manual"];
         if (!(wordList && wordList.length === settings.maxWords)) {
+            hideLoadingSpinner();
             $("#loadErrorPopup").popup("open");
             return;
         }
@@ -198,13 +198,12 @@ var app = (function ($, mw_client) {
         $("#spellingPage").off("pagebeforeshow").on("pagebeforeshow", function () {
             $("#numWordsDisplay").text(wordNum);
             $("#maxWordsDisplay").text(settings.maxWords);
-            $("#wordProgressBar").val((wordNum / settings.maxWords) * 100);
+            $("#wordProgressBar").val((wordNum / settings.maxWords) * 100).slider("refresh");
             $("#numTriesDisplay").text(numTries);
             $("#maxTriesDisplay").text(settings.maxTries);
             $("#wordDefinitionDisplay").html(word.definitions[0]);
             $("#wordInput").val("");
             $("#nextWordButton").text((wordNum === settings.maxWords) ? "Show results" : "Next word");
-            $("#wordProgressBar").slider("refresh");
             $("#wordDefinitionCollapsible").collapsible("collapse");
         });
 
@@ -283,7 +282,7 @@ var app = (function ($, mw_client) {
         var networkState = navigator.connection.type;
         if (networkState === Connection.NONE || networkState === Connection.UNKNOWN) {
             return false;
-        } else if (networkState === Connection.WIFI || networkState === Connection.Ethernet) {
+        } else if (networkState === Connection.WIFI || networkState === Connection.ETHERNET) {
             return true;
         } else {
             return settings.enableCellularDownloads;
