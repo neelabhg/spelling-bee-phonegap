@@ -49,6 +49,11 @@ var app = (function ($, mw_client) {
         $("#settingsPage").on("pagebeforeshow", function () {
             setUserSettings(settings);
         });
+
+        $("#spellingPage").on("pagebeforeshow", function () {
+            $("#wordProgressBar").slider("refresh");
+            $("#wordDefinitionCollapsible").collapsible("collapse");
+        });
     };
 
     var handleDiscardSettingsAction = function (userClickEvent) {
@@ -114,8 +119,8 @@ var app = (function ($, mw_client) {
         }
     });
 
-    var changePage = function (target) {
-        $(":mobile-pagecontainer").pagecontainer("change", target, {});
+    var changePage = function (target, options) {
+        $(":mobile-pagecontainer").pagecontainer("change", target, options || {});
     };
 
     var showLoadingSpinner = function (text) {
@@ -187,15 +192,7 @@ var app = (function ($, mw_client) {
             };
         }
 
-        // Attach click handlers to the buttons in the UI.
-        // First remove the already attached event handlers because we set these
-        // handlers every time spellView is called, i.e, when loading a new word.
-        // If we don't remove the previous handlers, the new handlers will get
-        // attached in addition to the already attached handlers, and when the
-        // event fires, all the previously attached handlers will also be called,
-        // which will wreak havoc.
-
-        $("#spellingPage").off("pagebeforeshow").on("pagebeforeshow", function () {
+        var initView = function () {
             $("#numWordsDisplay").text(wordNum);
             $("#maxWordsDisplay").text(settings.maxWords);
             $("#wordProgressBar").val((wordNum / settings.maxWords) * 100).slider("refresh");
@@ -205,7 +202,15 @@ var app = (function ($, mw_client) {
             $("#wordInput").val("");
             $("#nextWordButton").text((wordNum === settings.maxWords) ? "Show results" : "Next word");
             $("#wordDefinitionCollapsible").collapsible("collapse");
-        });
+        };
+
+        // Attach click handlers to the buttons in the UI.
+        // First remove the already attached event handlers because we set these
+        // handlers every time spellView is called, i.e, when loading a new word.
+        // If we don't remove the previous handlers, the new handlers will get
+        // attached in addition to the already attached handlers, and when the
+        // event fires, all the previously attached handlers will also be called,
+        // which will wreak havoc.
 
         $("#nextWordButton").off("click").on("click", function () {
             if (wordNum === settings.maxWords) {
@@ -261,13 +266,15 @@ var app = (function ($, mw_client) {
         });
 
         changePage("#spellingPage");
+        initView();
     };
 
     var displayResults = function (results) {
         $("#correctWordsCount").text(results['correctCount'] || 0);
         $("#incorrectWordsCount").text(results['incorrectCount'] || 0);
         $("#skippedWordsCount").text(results['skippedCount'] || 0);
-        results.words.foreach(function (wordResult) {
+        $("#wordReport").html("");
+        results.words.forEach(function (wordResult) {
             $("#wordReport").append($("<li></li>", {
                 text: wordResult.word + ": " + wordResult.result
             }));
