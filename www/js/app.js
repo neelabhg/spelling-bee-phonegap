@@ -51,6 +51,7 @@ var app = (function ($, mw_client) {
         });
 
         $("#settingsPage").on("pagebeforeshow", function () {
+            settings = loadSettings();
             setUserSettings(settings);
         });
 
@@ -156,6 +157,10 @@ var app = (function ($, mw_client) {
     var startGame = function () {
         changePage("#emptyPage");
         showLoadingSpinner("Loading words");
+
+        // grab settings from the settings page for this game
+        settings.maxWords = parseInt($("#currentGameNumWordsSlider").val());
+
         if (!isInternetAvailable()) {
             hideLoadingSpinner();
             $("#noConnectionPopup").popup("open");
@@ -220,6 +225,11 @@ var app = (function ($, mw_client) {
             $("#nextWordButton").text((wordNum === settings.maxWords) ? "Show results" : "Next word");
             $("#wordDefinitionCollapsible").collapsible("collapse");
             $("#incorrectAnswerMsg").hide();
+
+            // Play the word audio when the view loads, so that the user does not have to press the
+            // play button and wait for playback. Also, playing it once caches the audio file so that
+            // subsequent plays won't have to wait for the audio to download and hence will be faster.
+            wordAudio.play();
         };
 
         // Attach click handlers to the buttons in the UI.
