@@ -54,6 +54,10 @@ var app = (function ($, mw_client) {
             $("#wordProgressBar").slider("refresh");
             $("#wordDefinitionCollapsible").collapsible("collapse");
         });
+
+        $("#wordInput").on("focus", function () {
+            $("#incorrectAnswerMsg").hide();
+        });
     };
 
     var handleDiscardSettingsAction = function (userClickEvent) {
@@ -202,6 +206,7 @@ var app = (function ($, mw_client) {
             $("#wordInput").val("");
             $("#nextWordButton").text((wordNum === settings.maxWords) ? "Show results" : "Next word");
             $("#wordDefinitionCollapsible").collapsible("collapse");
+            $("#incorrectAnswerMsg").hide();
         };
 
         // Attach click handlers to the buttons in the UI.
@@ -249,6 +254,7 @@ var app = (function ($, mw_client) {
                 $("#wordDonePopup").popup("open");
             } else {
                 // incorrect answer
+                $("#incorrectAnswerMsg").show();
                 if (numTries === settings.maxTries) {
                     // max number of tries reached
                     results['incorrectCount'] += 1;

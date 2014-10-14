@@ -46,3 +46,12 @@
     margin: 0 15px 0 15px;
     pointer-events: none;
 }
+
+.hidden {
+    display: none;
+}
+
+#incorrectAnswerMsg {
+    text-align: center;
+    color: red;
+}
