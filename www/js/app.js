@@ -14,7 +14,11 @@ var app = (function ($, mw_client) {
 
         settings = loadSettings() || defaultSettings;
         
-        $("#startButton").on("click", function () {
+        $("#newGameButton").on("click", function () {
+            newGame();
+        });
+
+        $("#startGameButton").on("click", function () {
             startGame();
         });
 
@@ -57,6 +61,10 @@ var app = (function ($, mw_client) {
 
         $("#wordInput").on("focus", function () {
             $("#incorrectAnswerMsg").hide();
+        });
+
+        $("#startGameSettingsPage").on("pagebeforeshow", function () {
+            $("#currentGameNumWordsSlider").val(settings.maxWords).slider("refresh");
         });
     };
 
@@ -138,6 +146,11 @@ var app = (function ($, mw_client) {
 
     var hideLoadingSpinner = function () {
         $.mobile.loading('hide');
+    };
+
+    var newGame = function () {
+        // show the settings page for the current game
+        changePage("#startGameSettingsPage");
     };
 
     var startGame = function () {
